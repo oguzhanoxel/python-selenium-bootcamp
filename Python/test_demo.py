@@ -7,6 +7,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 from pathlib import Path
 from datetime import date
 from time import sleep
+import openpyxl
+from constants import global_constants
 
 
 class TestDemo:
@@ -14,7 +16,7 @@ class TestDemo:
 	def setup_method(self):
 		self.driver = webdriver.Chrome()
 		self.driver.maximize_window()
-		self.driver.get("https://www.saucedemo.com/")
+		self.driver.get(global_constants.URL)
 		self.today = str(date.today())
 		Path(self.today).mkdir(exist_ok=True)
 
@@ -25,14 +27,22 @@ class TestDemo:
 		text = "Hello"
 		assert text == "Hello"
 
+	def getData():
+		excelFile = openpyxl.load_workbook("data/invalid_login.xlsx")
+		selectedSheet = excelFile["Sayfa1"]
+		
+		totalRows = selectedSheet.max_row
+		data=[]
+		for i in range(2, totalRows+1):
+			username = selectedSheet.cell(i, 1).value
+			password = selectedSheet.cell(i, 2).value
+			tupleData = (username, password)
+			data.append(tupleData)
+
+		return data
+
 	# @pytest.mark.skip()
-	@pytest.mark.parametrize(
-		"username,password",
-		[
-			("abc", "abc"),
-			("test_user", "abc"),
-			("1", "1")
-		])
+	@pytest.mark.parametrize("username,password", getData())
 	def test_invalid_login(self, username, password):
 		self.waitForElementVisible((By.ID, "user-name"))
 		self.waitForElementVisible((By.ID, "password"))
