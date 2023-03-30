@@ -11,7 +11,7 @@ import openpyxl
 from constants import global_constants
 
 
-class TestDemo:
+class Demo:
 
 	def setup_method(self):
 		self.driver = webdriver.Chrome()
